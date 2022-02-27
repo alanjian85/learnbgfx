@@ -88,10 +88,13 @@ int main() {
     bgfx::VertexBufferHandle vbh2 = bgfx::createVertexBuffer(bgfx::makeRef(vertices2, sizeof(vertices2)), layout2);
 
     bgfx::ShaderHandle vsh = loadShader("vs_shader.bin");
-    bgfx::ShaderHandle fsh = loadShader("fs_shader.bin");
-    bgfx::ProgramHandle program = bgfx::createProgram(vsh, fsh);
+    bgfx::ShaderHandle fsh_orange = loadShader("fs_orange.bin");
+    bgfx::ShaderHandle fsh_yellow = loadShader("fs_yellow.bin");
+    bgfx::ProgramHandle program_orange = bgfx::createProgram(vsh, fsh_orange);
+    bgfx::ProgramHandle program_yellow = bgfx::createProgram(vsh, fsh_yellow);
     bgfx::destroy(vsh);
-    bgfx::destroy(fsh);
+    bgfx::destroy(fsh_orange);
+    bgfx::destroy(fsh_yellow);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
@@ -123,11 +126,11 @@ int main() {
 
             bgfx::setVertexBuffer(0, vbh1);
             bgfx::setState(BGFX_STATE_WRITE_RGB);
-            bgfx::submit(0, program);
+            bgfx::submit(0, program_orange);
 
             bgfx::setVertexBuffer(0, vbh2);
             bgfx::setState(BGFX_STATE_WRITE_RGB);
-            bgfx::submit(0, program);
+            bgfx::submit(0, program_yellow);
 
             bgfx::frame();
         }

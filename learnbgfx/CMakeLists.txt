@@ -6,7 +6,8 @@ add_executable(learnbgfx ${LEARNBGFX_SOURCES})
 
 set(LEARNBGFX_SHADERS
     shaders/vs_shader.sc
-    shaders/fs_shader.sc)
+    shaders/fs_orange.sc
+    shaders/fs_yellow.sc)
 add_bgfx_shader(learnbgfx ${LEARNBGFX_SHADERS})
 
 find_package(SDL2 REQUIRED)
