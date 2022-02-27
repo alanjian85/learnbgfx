@@ -64,9 +64,15 @@ int main() {
     }
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
+         0.5f,  0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f
+    };
+
+    uint16_t indices[] = {
+        0, 1, 3,
+        1, 2, 3  
     };
 
     bgfx::VertexLayout layout;
@@ -74,6 +80,7 @@ int main() {
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
     .end();
     bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
+    bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(bgfx::makeRef(indices, sizeof(indices)));
 
     bgfx::ShaderHandle vsh = loadShader("vs_shader.bin");
     bgfx::ShaderHandle fsh = loadShader("fs_shader.bin");
@@ -106,10 +113,12 @@ int main() {
                     }
             }
 
-            bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4d);
+            bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
             bgfx::touch(0);
 
             bgfx::setVertexBuffer(0, vbh);
+            bgfx::setIndexBuffer(ibh);
+            bgfx::setState(BGFX_STATE_WRITE_RGB);
             bgfx::submit(0, program);
 
             bgfx::frame();
