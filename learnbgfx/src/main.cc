@@ -63,20 +63,29 @@ int main() {
         return -1;
     }
 
-    float vertices[] = {
-         0.5f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
+    float vertices1[] = {
+        -0.9f, -0.5f, 0.0f,
+         0.0f, -0.5f, 0.0f,
+        -0.45f, 0.5f, 0.0f
     };
 
-    bgfx::VertexLayout layout;
-    layout.begin()
+    float vertices2[] = {
+        0.0f, -0.5f, 0.0f,
+        0.9f, -0.5f, 0.0f,
+        0.45f, 0.5f, 0.0f
+    };
+
+    bgfx::VertexLayout layout1;
+    layout1.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
     .end();
-    bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
+    bgfx::VertexBufferHandle vbh1 = bgfx::createVertexBuffer(bgfx::makeRef(vertices1, sizeof(vertices1)), layout1);
+
+    bgfx::VertexLayout layout2;
+    layout2.begin()
+        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+    .end();
+    bgfx::VertexBufferHandle vbh2 = bgfx::createVertexBuffer(bgfx::makeRef(vertices2, sizeof(vertices2)), layout2);
 
     bgfx::ShaderHandle vsh = loadShader("vs_shader.bin");
     bgfx::ShaderHandle fsh = loadShader("fs_shader.bin");
@@ -112,7 +121,11 @@ int main() {
             bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
             bgfx::touch(0);
 
-            bgfx::setVertexBuffer(0, vbh);
+            bgfx::setVertexBuffer(0, vbh1);
+            bgfx::setState(BGFX_STATE_WRITE_RGB);
+            bgfx::submit(0, program);
+
+            bgfx::setVertexBuffer(0, vbh2);
             bgfx::setState(BGFX_STATE_WRITE_RGB);
             bgfx::submit(0, program);
 
