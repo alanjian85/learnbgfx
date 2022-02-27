@@ -89,6 +89,7 @@ int main() {
     bgfx::destroy(fsh);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
+    bgfx::setDebug(BGFX_DEBUG_WIREFRAME);
 
     bool quit = false;
     while (!quit) {
