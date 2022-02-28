@@ -10,20 +10,12 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
+#include "Program.h"
+using namespace learnbgfx;
+
 void windowResizeCallback(SDL_Window* window, int width, int height) {
     bgfx::reset(width, height);
     bgfx::setViewRect(0, 0, 0, width, height);
-}
-
-bgfx::ShaderHandle loadShader(const char* filename) {
-    std::ifstream file(filename, std::ios::ate);
-    std::size_t size = file.tellg();
-    file.seekg(0, std::ios::beg);
-    std::vector<char> data(size);
-    file.read(data.data(), size);
-    const bgfx::Memory* memory = bgfx::copy(data.data(), data.size());
-    memory->data[memory->size - 1] = '\0';
-    return bgfx::createShader(memory);
 }
 
 int main() {
@@ -77,11 +69,7 @@ int main() {
     .end();
     bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
-    bgfx::ShaderHandle vsh = loadShader("vs_shader.bin");
-    bgfx::ShaderHandle fsh = loadShader("fs_shader.bin");
-    bgfx::ProgramHandle program = bgfx::createProgram(vsh, fsh);
-    bgfx::destroy(vsh);
-    bgfx::destroy(fsh);
+    bgfx::ProgramHandle program = loadProgram("vs_shader.bin", "fs_shader.bin");
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
