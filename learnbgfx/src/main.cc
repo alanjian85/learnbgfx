@@ -56,10 +56,10 @@ int main() {
 
     float vertices[] = {
         // positions         // colors          // texture coords
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f
     };
 
     std::uint16_t indices[] = {
@@ -78,8 +78,11 @@ int main() {
 
     bgfx::ProgramHandle program = loadProgram("vs_shader.bin", "fs_shader.bin");
 
-    bgfx::UniformHandle s_texture = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
-    bgfx::TextureHandle texture = loadTexture("container.dds");
+    bgfx::UniformHandle s_texture1 = bgfx::createUniform("s_texture1", bgfx::UniformType::Sampler);
+    bgfx::UniformHandle s_texture2 = bgfx::createUniform("s_texture2", bgfx::UniformType::Sampler);
+
+    bgfx::TextureHandle texture1 = loadTexture("container.dds");
+    bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds");
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
@@ -112,7 +115,8 @@ int main() {
 
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setIndexBuffer(ibh);
-        bgfx::setTexture(0, s_texture, texture);
+        bgfx::setTexture(0, s_texture1, texture1);
+        bgfx::setTexture(1, s_texture2, texture2);
         bgfx::setState(BGFX_STATE_WRITE_RGB);
         bgfx::submit(0, program);
 
