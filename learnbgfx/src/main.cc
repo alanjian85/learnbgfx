@@ -63,38 +63,23 @@ int main() {
         return -1;
     }
 
-    float vertices1[] = {
-        -0.9f, -0.5f, 0.0f,
-         0.0f, -0.5f, 0.0f,
-        -0.45f, 0.5f, 0.0f
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
     };
 
-    float vertices2[] = {
-        0.0f, -0.5f, 0.0f,
-        0.9f, -0.5f, 0.0f,
-        0.45f, 0.5f, 0.0f
-    };
-
-    bgfx::VertexLayout layout1;
-    layout1.begin()
+    bgfx::VertexLayout layout;
+    layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
     .end();
-    bgfx::VertexBufferHandle vbh1 = bgfx::createVertexBuffer(bgfx::makeRef(vertices1, sizeof(vertices1)), layout1);
-
-    bgfx::VertexLayout layout2;
-    layout2.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-    .end();
-    bgfx::VertexBufferHandle vbh2 = bgfx::createVertexBuffer(bgfx::makeRef(vertices2, sizeof(vertices2)), layout2);
+    bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
     bgfx::ShaderHandle vsh = loadShader("vs_shader.bin");
-    bgfx::ShaderHandle fsh_orange = loadShader("fs_orange.bin");
-    bgfx::ShaderHandle fsh_yellow = loadShader("fs_yellow.bin");
-    bgfx::ProgramHandle program_orange = bgfx::createProgram(vsh, fsh_orange);
-    bgfx::ProgramHandle program_yellow = bgfx::createProgram(vsh, fsh_yellow);
+    bgfx::ShaderHandle fsh = loadShader("fs_shader.bin");
+    bgfx::ProgramHandle program = bgfx::createProgram(vsh, fsh);
     bgfx::destroy(vsh);
-    bgfx::destroy(fsh_orange);
-    bgfx::destroy(fsh_yellow);
+    bgfx::destroy(fsh);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
@@ -124,13 +109,9 @@ int main() {
             bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
             bgfx::touch(0);
 
-            bgfx::setVertexBuffer(0, vbh1);
+            bgfx::setVertexBuffer(0, vbh);
             bgfx::setState(BGFX_STATE_WRITE_RGB);
-            bgfx::submit(0, program_orange);
-
-            bgfx::setVertexBuffer(0, vbh2);
-            bgfx::setState(BGFX_STATE_WRITE_RGB);
-            bgfx::submit(0, program_yellow);
+            bgfx::submit(0, program);
 
             bgfx::frame();
         }
