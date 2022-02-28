@@ -1,3 +1,5 @@
+#include <chrono>
+#include <cmath>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
@@ -81,6 +83,8 @@ int main() {
     bgfx::destroy(vsh);
     bgfx::destroy(fsh);
 
+    bgfx::UniformHandle u_color = bgfx::createUniform("u_color", bgfx::UniformType::Vec4);
+
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
     bool quit = false;
@@ -105,16 +109,20 @@ int main() {
                             break;
                     }
             }
-
-            bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
-            bgfx::touch(0);
-
-            bgfx::setVertexBuffer(0, vbh);
-            bgfx::setState(BGFX_STATE_WRITE_RGB);
-            bgfx::submit(0, program);
-
-            bgfx::frame();
         }
+
+        bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
+        bgfx::touch(0);
+
+        float time = SDL_GetTicks() / 1000.0f;
+        float green = std::sin(time) * 0.5f + 0.5f;
+        float color[4] = { 0.0f, green, 0.0f, 1.0f };
+        bgfx::setUniform(u_color, color);
+        bgfx::setVertexBuffer(0, vbh);
+        bgfx::setState(BGFX_STATE_WRITE_RGB);
+        bgfx::submit(0, program);
+
+        bgfx::frame();
     }
 
     bgfx::shutdown();
