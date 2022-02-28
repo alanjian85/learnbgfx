@@ -9,6 +9,10 @@ set(LEARNBGFX_SHADERS
     shaders/fs_shader.sc)
 add_bgfx_shader(learnbgfx ${LEARNBGFX_SHADERS})
 
+set(LEARNBGFX_TEXTURES
+    textures/container.jpg)
+add_bgfx_texture(learnbgfx ${LEARNBGFX_TEXTURES})
+
 find_package(SDL2 REQUIRED)
 find_package(bgfx REQUIRED)
 

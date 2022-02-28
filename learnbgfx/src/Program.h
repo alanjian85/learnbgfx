@@ -1,11 +1,15 @@
 #ifndef LEARNBGFX_PROGRAM_H_
 #define LEARNBGFX_PROGRAM_H_
 
+#include <cstdlib>
+#include <fstream>
+#include <vector>
+
 #include <bgfx/bgfx.h>
 
 namespace learnbgfx {
     inline bgfx::ShaderHandle loadShader(const char* filename) {
-        std::ifstream file(filename, std::ios::ate);
+        std::ifstream file(filename, std::ios::ate | std::ios::binary);
         std::size_t size = file.tellg();
         file.seekg(0, std::ios::beg);
         std::vector<char> data(size);

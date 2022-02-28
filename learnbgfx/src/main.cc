@@ -1,8 +1,5 @@
 #include <cmath>
-#include <cstdlib>
-#include <fstream>
 #include <iostream>
-#include <vector>
 
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
@@ -11,6 +8,7 @@
 #include <SDL2/SDL_syswm.h>
 
 #include "Program.h"
+#include "Texture.h"
 using namespace learnbgfx;
 
 void windowResizeCallback(SDL_Window* window, int width, int height) {
@@ -57,19 +55,31 @@ int main() {
     }
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+        // positions         // colors          // texture coords
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 1.0f
+    };
+
+    std::uint16_t indices[] = {
+        0, 1, 3,
+        1, 2, 3
     };
 
     bgfx::VertexLayout layout;
     layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
         .add(bgfx::Attrib::Color0, 3, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
     .end();
     bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
+    bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(bgfx::makeRef(indices, sizeof(indices)));
 
     bgfx::ProgramHandle program = loadProgram("vs_shader.bin", "fs_shader.bin");
+
+    bgfx::UniformHandle s_texture = bgfx::createUniform("s_texture", bgfx::UniformType::Sampler);
+    bgfx::TextureHandle texture = loadTexture("container.dds");
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
@@ -101,6 +111,8 @@ int main() {
         bgfx::touch(0);
 
         bgfx::setVertexBuffer(0, vbh);
+        bgfx::setIndexBuffer(ibh);
+        bgfx::setTexture(0, s_texture, texture);
         bgfx::setState(BGFX_STATE_WRITE_RGB);
         bgfx::submit(0, program);
 
