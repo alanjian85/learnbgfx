@@ -83,8 +83,6 @@ int main() {
     bgfx::destroy(vsh);
     bgfx::destroy(fsh);
 
-    bgfx::UniformHandle u_params = bgfx::createUniform("u_params", bgfx::UniformType::Vec4); 
-
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
     bool quit = false;
@@ -114,9 +112,6 @@ int main() {
         bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
         bgfx::touch(0);
 
-        float offset = 0.5f;
-        float params[4] = { offset, 0.0f, 0.0f, 0.0f };
-        bgfx::setUniform(u_params, params);
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB);
         bgfx::submit(0, program);
