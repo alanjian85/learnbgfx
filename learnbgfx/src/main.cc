@@ -81,7 +81,7 @@ int main() {
     bgfx::UniformHandle s_texture1 = bgfx::createUniform("s_texture1", bgfx::UniformType::Sampler);
     bgfx::UniformHandle s_texture2 = bgfx::createUniform("s_texture2", bgfx::UniformType::Sampler);
 
-    bgfx::TextureHandle texture1 = loadTexture("container.dds");
+    bgfx::TextureHandle texture1 = loadTexture("container.dds", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
     bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds");
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
