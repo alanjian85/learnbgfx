@@ -56,10 +56,10 @@ int main() {
 
     float vertices[] = {
         // positions         // colors          // texture coords
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.55f, 0.45f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  0.55f, 0.55f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.45f, 0.55f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.45f, 0.45f
     };
 
     std::uint16_t indices[] = {
@@ -81,8 +81,8 @@ int main() {
     bgfx::UniformHandle s_texture1 = bgfx::createUniform("s_texture1", bgfx::UniformType::Sampler);
     bgfx::UniformHandle s_texture2 = bgfx::createUniform("s_texture2", bgfx::UniformType::Sampler);
 
-    bgfx::TextureHandle texture1 = loadTexture("container.dds", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
-    bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds");
+    bgfx::TextureHandle texture1 = loadTexture("container.dds", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT);
+    bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds", BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
