@@ -1,5 +1,5 @@
-uniform vec4 u_color;
+$input v_color0
 
 void main() {
-    gl_FragColor = u_color;
+    gl_FragColor = vec4(v_color0, 1.0);
 }

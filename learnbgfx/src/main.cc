@@ -1,4 +1,3 @@
-#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -66,14 +65,15 @@ int main() {
     }
 
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
     };
 
     bgfx::VertexLayout layout;
     layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::Color0, 3, bgfx::AttribType::Float)
     .end();
     bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
@@ -82,8 +82,6 @@ int main() {
     bgfx::ProgramHandle program = bgfx::createProgram(vsh, fsh);
     bgfx::destroy(vsh);
     bgfx::destroy(fsh);
-
-    bgfx::UniformHandle u_color = bgfx::createUniform("u_color", bgfx::UniformType::Vec4);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
@@ -114,10 +112,6 @@ int main() {
         bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
         bgfx::touch(0);
 
-        float time = SDL_GetTicks() / 1000.0f;
-        float green = std::sin(time) * 0.5f + 0.5f;
-        float color[4] = { 0.0f, green, 0.0f, 1.0f };
-        bgfx::setUniform(u_color, color);
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB);
         bgfx::submit(0, program);
