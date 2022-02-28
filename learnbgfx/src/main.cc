@@ -11,9 +11,31 @@
 #include "Texture.h"
 using namespace learnbgfx;
 
+static bool quit = false;
+static float mix_value = 0.2f;
+
 void windowResizeCallback(SDL_Window* window, int width, int height) {
     bgfx::reset(width, height);
     bgfx::setViewRect(0, 0, 0, width, height);
+}
+
+void processInput() {
+    const Uint8* state = SDL_GetKeyboardState(nullptr);
+    if (state[SDL_SCANCODE_ESCAPE]) {
+        quit = true;
+    }
+
+    if (state[SDL_SCANCODE_UP]) {
+        mix_value += 0.001f;
+        if (mix_value >= 1.0f)
+            mix_value = 1.0f;
+    }
+    
+    if (state[SDL_SCANCODE_DOWN]) {
+        mix_value -= 0.001f;
+        if (mix_value <= 0.0f)
+            mix_value = 0.0f;
+    }
 }
 
 int main() {
@@ -56,10 +78,10 @@ int main() {
 
     float vertices[] = {
         // positions         // colors          // texture coords
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  0.55f, 0.45f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  0.55f, 0.55f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.45f, 0.55f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.45f, 0.45f
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,  0.0f, 0.0f
     };
 
     std::uint16_t indices[] = {
@@ -80,13 +102,13 @@ int main() {
 
     bgfx::UniformHandle s_texture1 = bgfx::createUniform("s_texture1", bgfx::UniformType::Sampler);
     bgfx::UniformHandle s_texture2 = bgfx::createUniform("s_texture2", bgfx::UniformType::Sampler);
+    bgfx::UniformHandle u_params = bgfx::createUniform("u_params", bgfx::UniformType::Vec4);
 
-    bgfx::TextureHandle texture1 = loadTexture("container.dds", BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT);
-    bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds", BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT);
+    bgfx::TextureHandle texture1 = loadTexture("container.dds");
+    bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds");
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
-    bool quit = false;
     while (!quit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -101,14 +123,10 @@ int main() {
                             break;
                     }
                     break;
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_ESCAPE:
-                            quit = true;
-                            break;
-                    }
             }
         }
+
+        processInput();
 
         bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
         bgfx::touch(0);
@@ -117,6 +135,8 @@ int main() {
         bgfx::setIndexBuffer(ibh);
         bgfx::setTexture(0, s_texture1, texture1);
         bgfx::setTexture(1, s_texture2, texture2);
+        float params[] = { mix_value, 0.0f, 0.0f, 0.0f };
+        bgfx::setUniform(u_params, params);
         bgfx::setState(BGFX_STATE_WRITE_RGB);
         bgfx::submit(0, program);
 
