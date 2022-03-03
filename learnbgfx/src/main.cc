@@ -140,12 +140,26 @@ int main() {
         );
         bgfx::setTransform(transform);
 
-        bgfx::setVertexBuffer(0, vbh);
-        bgfx::setIndexBuffer(ibh);
         bgfx::setTexture(0, s_texture1, texture1);
         bgfx::setTexture(1, s_texture2, texture2);
+
+        bgfx::setVertexBuffer(0, vbh);
+        bgfx::setIndexBuffer(ibh);
         float params[] = { mix_value, 0.0f, 0.0f, 0.0f };
         bgfx::setUniform(u_params, params);
+        bgfx::setState(BGFX_STATE_WRITE_RGB);
+        bgfx::submit(0, program);
+
+        auto scale = std::sin(SDL_GetTicks() / 1000.0f);
+        bx::mtxSRT(transform,
+            scale, scale, scale,
+            0.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.0f
+        );
+        bgfx::setTransform(transform);
+
+        bgfx::setVertexBuffer(0, vbh);
+        bgfx::setIndexBuffer(ibh);
         bgfx::setState(BGFX_STATE_WRITE_RGB);
         bgfx::submit(0, program);
 
