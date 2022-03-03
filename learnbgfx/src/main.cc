@@ -4,6 +4,7 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
 #include <bx/bx.h>
+#include <bx/math.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
@@ -130,6 +131,14 @@ int main() {
 
         bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x334d4d);
         bgfx::touch(0);
+
+        float transform[16];
+        bx::mtxSRT(transform, 
+            1.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, -(SDL_GetTicks() / 1000.0f), 
+            0.5f, -0.5f, 0.0f
+        );
+        bgfx::setTransform(transform);
 
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setIndexBuffer(ibh);
