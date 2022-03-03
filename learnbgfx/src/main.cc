@@ -110,6 +110,22 @@ int main() {
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
 
+    bgfx::setTexture(0, s_texture1, texture1);
+    bgfx::setTexture(1, s_texture2, texture2);
+
+    float view[16];
+    bx::mtxLookAt(view, bx::Vec3(0.0f, 0.0f, 3.0f), bx::Vec3(0.0f, 0.0f, 0.0f));
+
+    float proj[16];
+    bx::mtxProj(proj, 
+        45.0f, 
+        800.0f / 600.0f,
+        0.1f, 100.0f,
+        bgfx::getCaps()->homogeneousDepth
+    );
+
+    bgfx::setViewTransform(0, view, proj);
+
     while (!quit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -135,28 +151,13 @@ int main() {
         float transform[16];
         bx::mtxSRT(transform, 
             1.0f, 1.0f, 1.0f,
-            0.0f, 0.0f, -(SDL_GetTicks() / 1000.0f), 
-            0.5f, -0.5f, 0.0f
+            bx::toRad(55.0f), 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f
         );
         bgfx::setTransform(transform);
 
-        bgfx::setTexture(0, s_texture1, texture1);
-        bgfx::setTexture(1, s_texture2, texture2);
-
-        bgfx::setVertexBuffer(0, vbh);
-        bgfx::setIndexBuffer(ibh);
         float params[] = { mix_value, 0.0f, 0.0f, 0.0f };
         bgfx::setUniform(u_params, params);
-        bgfx::setState(BGFX_STATE_WRITE_RGB);
-        bgfx::submit(0, program);
-
-        auto scale = std::sin(SDL_GetTicks() / 1000.0f);
-        bx::mtxSRT(transform,
-            scale, scale, scale,
-            0.0f, 0.0f, 0.0f,
-            -0.5f, 0.5f, 0.0f
-        );
-        bgfx::setTransform(transform);
 
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setIndexBuffer(ibh);
