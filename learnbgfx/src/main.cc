@@ -157,19 +157,6 @@ int main() {
     bgfx::setTexture(0, s_texture1, texture1);
     bgfx::setTexture(1, s_texture2, texture2);
 
-    float view[16];
-    bx::mtxLookAt(view, bx::Vec3(0.0f, 0.0f, 3.0f), bx::Vec3(0.0f, 0.0f, 0.0f));
-
-    float proj[16];
-    bx::mtxProj(proj, 
-        45.0f, 
-        800.0f / 600.0f,
-        0.1f, 100.0f,
-        bgfx::getCaps()->homogeneousDepth
-    );
-
-    bgfx::setViewTransform(0, view, proj);
-
     while (!quit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -187,6 +174,22 @@ int main() {
             }
         }
 
+        float view[16];
+        auto radius = 10.0f;
+        auto camX = std::sin(SDL_GetTicks() / 1000.0f) * radius;
+        auto camZ = std::cos(SDL_GetTicks() / 1000.0f) * radius;
+        bx::mtxLookAt(view, bx::Vec3(camX, 0.0f, camZ), bx::Vec3(0.0f, 0.0f, 0.0f));
+
+        float proj[16];
+        bx::mtxProj(proj, 
+            45.0f, 
+            800.0f / 600.0f,
+            0.1f, 100.0f,
+            bgfx::getCaps()->homogeneousDepth
+        );
+
+        bgfx::setViewTransform(0, view, proj);
+
         processInput();
 
         bgfx::touch(0);
@@ -197,8 +200,6 @@ int main() {
         for (int i = 0; i < 10; ++i) {
             float transform[16];
             auto angle = 20.0f * i;
-            if (i % 3 == 0)
-                angle = SDL_GetTicks() / 1000.0f * 25.0f;
             bx::mtxSRT(transform,
                 1.0f, 1.0f, 1.0f,
                 bx::toRad(angle), bx::toRad(angle) * 0.3f, bx::toRad(angle) * 0.5f,
