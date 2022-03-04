@@ -12,8 +12,14 @@
 #include "Texture.h"
 using namespace learnbgfx;
 
-static bool quit = false;
-static float mix_value = 0.2f;
+namespace {
+    bool quit = false;
+    float mix_value = 0.2f;
+
+    bx::Vec3 cameraPos(0.0f, 0.0f, 3.0f);
+    bx::Vec3 cameraFront(0.0f, 0.0f, -1.0f);
+    bx::Vec3 cameraUp(0.0f, 1.0f, 0.0f);
+}
 
 void windowResizeCallback(SDL_Window* window, int width, int height) {
     bgfx::reset(width, height);
@@ -37,6 +43,16 @@ void processInput() {
         if (mix_value <= 0.0f)
             mix_value = 0.0f;
     }
+
+    const auto cameraSpeed = 0.05f;
+    if (state[SDL_SCANCODE_W])
+        cameraPos = bx::add(cameraPos, bx::mul(cameraFront, cameraSpeed));
+    if (state[SDL_SCANCODE_S])
+        cameraPos = bx::sub(cameraPos, bx::mul(cameraFront, cameraSpeed));
+    if (state[SDL_SCANCODE_A])
+        cameraPos = bx::sub(cameraPos, bx::mul(bx::normalize(bx::cross(cameraUp, cameraFront)), cameraSpeed));
+    if (state[SDL_SCANCODE_D])
+        cameraPos = bx::add(cameraPos, bx::mul(bx::normalize(bx::cross(cameraUp, cameraFront)), cameraSpeed));
 }
 
 int main() {
@@ -175,10 +191,7 @@ int main() {
         }
 
         float view[16];
-        auto radius = 10.0f;
-        auto camX = std::sin(SDL_GetTicks() / 1000.0f) * radius;
-        auto camZ = std::cos(SDL_GetTicks() / 1000.0f) * radius;
-        bx::mtxLookAt(view, bx::Vec3(camX, 0.0f, camZ), bx::Vec3(0.0f, 0.0f, 0.0f));
+        bx::mtxLookAt(view, cameraPos, bx::add(cameraPos, cameraFront), cameraUp);
 
         float proj[16];
         bx::mtxProj(proj, 
