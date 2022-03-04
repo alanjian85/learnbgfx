@@ -16,17 +16,40 @@ namespace {
     bool quit = false;
     float mix_value = 0.2f;
 
-    bx::Vec3 cameraPos(0.0f, 0.0f, 3.0f);
-    bx::Vec3 cameraFront(0.0f, 0.0f, -1.0f);
+    bx::Vec3 cameraPos(0.0f, 0.0f, -3.0f);
+    bx::Vec3 cameraFront(0.0f, 0.0f, 1.0f);
     bx::Vec3 cameraUp(0.0f, 1.0f, 0.0f);
 
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
+
+    float yaw = 90.0f;
+    float pitch = 0.0f;
 }
 
 void windowResizeCallback(SDL_Window* window, int width, int height) {
     bgfx::reset(width, height);
     bgfx::setViewRect(0, 0, 0, width, height);
+}
+
+void mouseMoveCallback(SDL_Window* window, Sint32 xrel, Sint32 yrel) {
+    const auto sensitivity = 0.1f;
+    auto xoffset = xrel * sensitivity;
+    auto yoffset = yrel * sensitivity;
+
+    yaw -= xoffset;
+    pitch -= yoffset;
+
+    if (pitch > 89.0f)
+        pitch = 89.0f;
+    if (pitch < -89.0f)
+        pitch = 89.0f;
+
+    bx::Vec3 direction(0.0f);
+    direction.x = bx::cos(bx::toRad(yaw)) * bx::cos(bx::toRad(pitch));
+    direction.y = bx::sin(bx::toRad(pitch));
+    direction.z = bx::sin(bx::toRad(yaw)) * bx::cos(bx::toRad(pitch));
+    cameraFront = bx::normalize(direction);
 }
 
 void processInput() {
@@ -71,6 +94,8 @@ int main() {
         SDL_Quit();
         return -1;
     }
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     bgfx::renderFrame();
 
@@ -159,15 +184,15 @@ int main() {
 
     bx::Vec3 cubePositions[] = {
         bx::Vec3( 0.0f,  0.0f,  0.0f), 
-        bx::Vec3( 2.0f,  5.0f, -15.0f), 
-        bx::Vec3(-1.5f, -2.2f, -2.5f),
-        bx::Vec3(-3.8f, -2.0f, -12.3f),  
-        bx::Vec3( 2.4f, -0.4f, -3.5f),  
-        bx::Vec3(-1.7f,  3.0f, -7.5f),  
-        bx::Vec3( 1.3f, -2.0f, -2.5f),  
-        bx::Vec3( 1.5f,  2.0f, -2.5f), 
-        bx::Vec3( 1.5f,  0.2f, -1.5f), 
-        bx::Vec3(-1.3f,  1.0f, -1.5f)  
+        bx::Vec3( 2.0f,  5.0f,  15.0f), 
+        bx::Vec3(-1.5f, -2.2f,  2.5f),
+        bx::Vec3(-3.8f, -2.0f,  12.3f),  
+        bx::Vec3( 2.4f, -0.4f,  3.5f),  
+        bx::Vec3(-1.7f,  3.0f,  7.5f),  
+        bx::Vec3( 1.3f, -2.0f,  2.5f),  
+        bx::Vec3( 1.5f,  2.0f,  2.5f), 
+        bx::Vec3( 1.5f,  0.2f,  1.5f), 
+        bx::Vec3(-1.3f,  1.0f,  1.5f)  
     };
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
@@ -189,6 +214,9 @@ int main() {
                             windowResizeCallback(window, event.window.data1, event.window.data2);
                             break;
                     }
+                    break;
+                case SDL_MOUSEMOTION:
+                    mouseMoveCallback(window, event.motion.xrel, event.motion.yrel);
                     break;
             }
         }
