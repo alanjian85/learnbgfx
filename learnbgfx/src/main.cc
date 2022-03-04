@@ -138,7 +138,21 @@ int main() {
     bgfx::TextureHandle texture1 = loadTexture("container.dds");
     bgfx::TextureHandle texture2 = loadTexture("awesomeface.dds");
 
+    bx::Vec3 cubePositions[] = {
+        bx::Vec3( 0.0f,  0.0f,  0.0f), 
+        bx::Vec3( 2.0f,  5.0f, -15.0f), 
+        bx::Vec3(-1.5f, -2.2f, -2.5f),
+        bx::Vec3(-3.8f, -2.0f, -12.3f),  
+        bx::Vec3( 2.4f, -0.4f, -3.5f),  
+        bx::Vec3(-1.7f,  3.0f, -7.5f),  
+        bx::Vec3( 1.3f, -2.0f, -2.5f),  
+        bx::Vec3( 1.5f,  2.0f, -2.5f), 
+        bx::Vec3( 1.5f,  0.2f, -1.5f), 
+        bx::Vec3(-1.3f,  1.0f, -1.5f)  
+    };
+
     bgfx::setViewRect(0, 0, 0, 800, 600);
+    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4d);
 
     bgfx::setTexture(0, s_texture1, texture1);
     bgfx::setTexture(1, s_texture2, texture2);
@@ -175,24 +189,26 @@ int main() {
 
         processInput();
 
-        bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4d);
         bgfx::touch(0);
-
-        auto time = SDL_GetTicks() / 1000.0f;
-        float transform[16];
-        bx::mtxSRT(transform, 
-            1.0f, 1.0f, 1.0f,
-            time * bx::toRad(25.0f), time * bx::toRad(50.0f), 0.0f,
-            0.0f, 0.0f, 0.0f
-        );
-        bgfx::setTransform(transform);
 
         float params[] = { mix_value, 0.0f, 0.0f, 0.0f };
         bgfx::setUniform(u_params, params);
 
-        bgfx::setVertexBuffer(0, vbh);
-        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-        bgfx::submit(0, program);
+        for (int i = 0; i < 10; ++i) {
+            float transform[16];
+            auto angle = 20.0f * i;
+            bx::mtxSRT(transform,
+                1.0f, 1.0f, 1.0f,
+                bx::toRad(angle), bx::toRad(angle) * 0.3f, bx::toRad(angle) * 0.5f,
+                cubePositions[i].x, cubePositions[i].y, cubePositions[i].z
+            );
+            bgfx::setTransform(transform);
+
+
+            bgfx::setVertexBuffer(0, vbh);
+            bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+            bgfx::submit(0, program);
+        }
 
         bgfx::frame();
     }
