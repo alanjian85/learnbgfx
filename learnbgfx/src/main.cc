@@ -19,6 +19,9 @@ namespace {
     bx::Vec3 cameraPos(0.0f, 0.0f, 3.0f);
     bx::Vec3 cameraFront(0.0f, 0.0f, -1.0f);
     bx::Vec3 cameraUp(0.0f, 1.0f, 0.0f);
+
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
 }
 
 void windowResizeCallback(SDL_Window* window, int width, int height) {
@@ -44,7 +47,7 @@ void processInput() {
             mix_value = 0.0f;
     }
 
-    const auto cameraSpeed = 0.05f;
+    const auto cameraSpeed = 2.5f * deltaTime;
     if (state[SDL_SCANCODE_W])
         cameraPos = bx::add(cameraPos, bx::mul(cameraFront, cameraSpeed));
     if (state[SDL_SCANCODE_S])
@@ -189,6 +192,10 @@ int main() {
                     break;
             }
         }
+
+        auto currentFrame = SDL_GetTicks() / 1000.0f;
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
         float view[16];
         bx::mtxLookAt(view, cameraPos, bx::add(cameraPos, cameraFront), cameraUp);
