@@ -197,6 +197,8 @@ int main() {
         for (int i = 0; i < 10; ++i) {
             float transform[16];
             auto angle = 20.0f * i;
+            if (i % 3 == 0)
+                angle = SDL_GetTicks() / 1000.0f * 25.0f;
             bx::mtxSRT(transform,
                 1.0f, 1.0f, 1.0f,
                 bx::toRad(angle), bx::toRad(angle) * 0.3f, bx::toRad(angle) * 0.5f,
