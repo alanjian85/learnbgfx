@@ -60,6 +60,7 @@ namespace learnbgfx {
                 position = bx::sub(position, bx::mul(right(), movementSpeed * deltaTime));
             if (d)
                 position = bx::add(position, bx::mul(right(), movementSpeed * deltaTime));
+            position.y = 0.0f;
         }
 
         void processMouseMovement(float xoffset, float yoffset) {
