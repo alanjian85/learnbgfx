@@ -29,7 +29,7 @@ namespace learnbgfx {
         rotation[9] = yaxis.z;
         rotation[10] = zaxis.z;
 
-        bx::mtxMul(result, rotation, translation);
+        bx::mtxMul(result, translation, rotation);
     }
 
     struct Camera {
@@ -55,10 +55,8 @@ namespace learnbgfx {
             zoom = 45.0f;
         }
 
-        std::array<float, 16> getViewMatrix() const {
-            std::array<float, 16> result;
-            lookAt(result.data(), position, bx::add(position, direction()), up());
-            return result;
+        void getViewMatrix(float* result) const {
+            lookAt(result, position, bx::add(position, direction()), up());
         }
 
         bx::Vec3 direction() const {

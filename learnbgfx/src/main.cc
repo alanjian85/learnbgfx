@@ -206,7 +206,8 @@ int main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        auto view = camera.getViewMatrix();
+        float view[16];
+        camera.getViewMatrix(view);
 
         float proj[16];
         bx::mtxProj(proj, 
@@ -216,7 +217,7 @@ int main() {
             bgfx::getCaps()->homogeneousDepth
         );
 
-        bgfx::setViewTransform(0, view.data(), proj);
+        bgfx::setViewTransform(0, view, proj);
 
         processInput();
 
