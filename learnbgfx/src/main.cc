@@ -8,6 +8,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 
+#include "Camera.h"
 #include "Program.h"
 #include "Texture.h"
 using namespace learnbgfx;
@@ -16,16 +17,10 @@ namespace {
     bool quit = false;
     float mix_value = 0.2f;
 
-    bx::Vec3 cameraPos(0.0f, 0.0f, -3.0f);
-    bx::Vec3 cameraFront(0.0f, 0.0f, 1.0f);
-    bx::Vec3 cameraUp(0.0f, 1.0f, 0.0f);
-
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 
-    float yaw = 90.0f;
-    float pitch = 0.0f;
-    float fov = 45.0f;
+    Camera camera;
 }
 
 void windowResizeCallback(SDL_Window* window, int width, int height) {
@@ -34,31 +29,11 @@ void windowResizeCallback(SDL_Window* window, int width, int height) {
 }
 
 void mouseMoveCallback(SDL_Window* window, Sint32 xrel, Sint32 yrel) {
-    const auto sensitivity = 0.1f;
-    auto xoffset = xrel * sensitivity;
-    auto yoffset = -yrel * sensitivity;
-
-    yaw -= xoffset;
-    pitch += yoffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = 89.0f;
-
-    bx::Vec3 direction(0.0f);
-    direction.x = bx::cos(bx::toRad(yaw)) * bx::cos(bx::toRad(pitch));
-    direction.y = bx::sin(bx::toRad(pitch));
-    direction.z = bx::sin(bx::toRad(yaw)) * bx::cos(bx::toRad(pitch));
-    cameraFront = bx::normalize(direction);
+    camera.processMouseMovement(xrel, -yrel);
 }
 
 void mouseScrollCallback(SDL_Window* window, Sint32 x, Sint32 y) {
-    fov -= y;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+    camera.processMouseScroll(y);
 }
 
 void processInput() {
@@ -78,19 +53,13 @@ void processInput() {
         if (mix_value <= 0.0f)
             mix_value = 0.0f;
     }
-
-    const auto cameraSpeed = 2.5f * deltaTime;
-    if (state[SDL_SCANCODE_W])
-        cameraPos = bx::add(cameraPos, bx::mul(cameraFront, cameraSpeed));
-    if (state[SDL_SCANCODE_S])
-        cameraPos = bx::sub(cameraPos, bx::mul(cameraFront, cameraSpeed));
-    if (state[SDL_SCANCODE_A])
-        cameraPos = bx::sub(cameraPos, bx::mul(bx::normalize(bx::cross(cameraUp, cameraFront)), cameraSpeed));
-    if (state[SDL_SCANCODE_D])
-        cameraPos = bx::add(cameraPos, bx::mul(bx::normalize(bx::cross(cameraUp, cameraFront)), cameraSpeed));
+    
+    camera.processKeyboard(state[SDL_SCANCODE_W], state[SDL_SCANCODE_A], state[SDL_SCANCODE_S], state[SDL_SCANCODE_D], deltaTime);
 }
 
 int main() {
+    camera.position = bx::Vec3(0.0f, 0.0f, -3.0f);
+
     SDL_Init(0);
     SDL_Window* window = SDL_CreateWindow(
         "LearnBgfx", 
@@ -237,18 +206,17 @@ int main() {
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        float view[16];
-        bx::mtxLookAt(view, cameraPos, bx::add(cameraPos, cameraFront), cameraUp);
+        auto view = camera.getViewMatrix();
 
         float proj[16];
         bx::mtxProj(proj, 
-            fov,
+            camera.zoom,
             800.0f / 600.0f,
             0.1f, 100.0f,
             bgfx::getCaps()->homogeneousDepth
         );
 
-        bgfx::setViewTransform(0, view, proj);
+        bgfx::setViewTransform(0, view.data(), proj);
 
         processInput();
 
