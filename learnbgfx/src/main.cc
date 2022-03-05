@@ -54,7 +54,14 @@ void processInput() {
             mix_value = 0.0f;
     }
     
-    camera.processKeyboard(state[SDL_SCANCODE_W], state[SDL_SCANCODE_A], state[SDL_SCANCODE_S], state[SDL_SCANCODE_D], deltaTime);
+    if (state[SDL_SCANCODE_W])
+        camera.processKeyboard(Orientation::kFront, deltaTime);
+    if (state[SDL_SCANCODE_S])
+        camera.processKeyboard(Orientation::kBack, deltaTime);
+    if (state[SDL_SCANCODE_A])
+        camera.processKeyboard(Orientation::kLeft, deltaTime);
+    if (state[SDL_SCANCODE_D])
+        camera.processKeyboard(Orientation::kRight, deltaTime);
 }
 
 int main() {

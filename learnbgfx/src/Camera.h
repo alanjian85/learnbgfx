@@ -22,15 +22,24 @@ namespace learnbgfx {
         rotation[0] = xaxis.x;
         rotation[1] = yaxis.x;
         rotation[2] = zaxis.x;
+
         rotation[4] = xaxis.y;
         rotation[5] = yaxis.y;
         rotation[6] = zaxis.y;
+        
         rotation[8] = xaxis.z;
         rotation[9] = yaxis.z;
         rotation[10] = zaxis.z;
 
         bx::mtxMul(result, translation, rotation);
     }
+
+    enum class Orientation {
+        kFront,
+        kBack,
+        kLeft,
+        kRight
+    };
 
     struct Camera {
         bx::Vec3 position;
@@ -75,15 +84,21 @@ namespace learnbgfx {
             return bx::normalize(bx::cross(direction(), right()));
         }
 
-        void processKeyboard(bool w, bool a, bool s, bool d, float deltaTime) {
-            if (w)
-                position = bx::add(position, bx::mul(direction(), movementSpeed * deltaTime));
-            if (s)
-                position = bx::sub(position, bx::mul(direction(), movementSpeed * deltaTime));
-            if (a)
-                position = bx::sub(position, bx::mul(right(), movementSpeed * deltaTime));
-            if (d)
-                position = bx::add(position, bx::mul(right(), movementSpeed * deltaTime));
+        void processKeyboard(Orientation orientation, float deltaTime) {
+            switch (orientation) {
+                case Orientation::kFront:
+                    position = bx::add(position, bx::mul(direction(), movementSpeed * deltaTime));
+                    break;
+                case Orientation::kBack:
+                    position = bx::sub(position, bx::mul(direction(), movementSpeed * deltaTime));
+                    break;
+                case Orientation::kLeft:
+                    position = bx::sub(position, bx::mul(right(), movementSpeed * deltaTime));
+                    break;
+                case Orientation::kRight:
+                    position = bx::add(position, bx::mul(right(), movementSpeed * deltaTime));
+                    break;
+            }
             position.y = 0.0f;
         }
 
