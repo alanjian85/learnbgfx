@@ -25,6 +25,7 @@ namespace {
 
     float yaw = 90.0f;
     float pitch = 0.0f;
+    float fov = 45.0f;
 }
 
 void windowResizeCallback(SDL_Window* window, int width, int height) {
@@ -35,10 +36,10 @@ void windowResizeCallback(SDL_Window* window, int width, int height) {
 void mouseMoveCallback(SDL_Window* window, Sint32 xrel, Sint32 yrel) {
     const auto sensitivity = 0.1f;
     auto xoffset = xrel * sensitivity;
-    auto yoffset = yrel * sensitivity;
+    auto yoffset = -yrel * sensitivity;
 
     yaw -= xoffset;
-    pitch -= yoffset;
+    pitch += yoffset;
 
     if (pitch > 89.0f)
         pitch = 89.0f;
@@ -50,6 +51,14 @@ void mouseMoveCallback(SDL_Window* window, Sint32 xrel, Sint32 yrel) {
     direction.y = bx::sin(bx::toRad(pitch));
     direction.z = bx::sin(bx::toRad(yaw)) * bx::cos(bx::toRad(pitch));
     cameraFront = bx::normalize(direction);
+}
+
+void mouseScrollCallback(SDL_Window* window, Sint32 x, Sint32 y) {
+    fov -= y;
+    if (fov < 1.0f)
+        fov = 1.0f;
+    if (fov > 45.0f)
+        fov = 45.0f;
 }
 
 void processInput() {
@@ -218,6 +227,9 @@ int main() {
                 case SDL_MOUSEMOTION:
                     mouseMoveCallback(window, event.motion.xrel, event.motion.yrel);
                     break;
+                case SDL_MOUSEWHEEL:
+                    mouseScrollCallback(window, event.wheel.x, event.wheel.y);
+                    break;
             }
         }
 
@@ -230,7 +242,7 @@ int main() {
 
         float proj[16];
         bx::mtxProj(proj, 
-            45.0f, 
+            fov,
             800.0f / 600.0f,
             0.1f, 100.0f,
             bgfx::getCaps()->homogeneousDepth
