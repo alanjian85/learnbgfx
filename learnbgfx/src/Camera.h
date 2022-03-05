@@ -6,6 +6,32 @@
 #include <bx/math.h>
 
 namespace learnbgfx {
+    void lookAt(float* result, bx::Vec3 position, bx::Vec3 target, bx::Vec3 worldUp) {
+        auto zaxis = bx::normalize(bx::sub(target, position));
+        auto xaxis = bx::normalize(bx::cross(worldUp, zaxis));
+        auto yaxis = bx::cross(zaxis, xaxis);
+
+        float translation[16];
+        bx::mtxIdentity(translation);
+        translation[12] = -position.x;
+        translation[13] = -position.y;
+        translation[14] = -position.z;
+
+        float rotation[16];
+        bx::mtxIdentity(rotation);
+        rotation[0] = xaxis.x;
+        rotation[1] = yaxis.x;
+        rotation[2] = zaxis.x;
+        rotation[4] = xaxis.y;
+        rotation[5] = yaxis.y;
+        rotation[6] = zaxis.y;
+        rotation[8] = xaxis.z;
+        rotation[9] = yaxis.z;
+        rotation[10] = zaxis.z;
+
+        bx::mtxMul(result, rotation, translation);
+    }
+
     struct Camera {
         bx::Vec3 position;
         bx::Vec3 worldUp;
@@ -31,7 +57,7 @@ namespace learnbgfx {
 
         std::array<float, 16> getViewMatrix() const {
             std::array<float, 16> result;
-            bx::mtxLookAt(result.data(), position, bx::add(position, direction()), up());
+            lookAt(result.data(), position, bx::add(position, direction()), up());
             return result;
         }
 
