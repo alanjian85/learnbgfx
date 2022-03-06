@@ -80,8 +80,6 @@ int main() {
         return -1;
     }
 
-    SDL_SetRelativeMouseMode(SDL_TRUE);
-
     bgfx::renderFrame();
 
     SDL_SysWMinfo wmi;
@@ -105,6 +103,8 @@ int main() {
         std::cerr << "Failed to initialize BGFX" << std::endl;
         return -1;
     }
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -214,11 +214,8 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
-        float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 0.0f };
+        float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
         bgfx::setUniform(u_lightPos, lightPos);
-
-        float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 0.0f };
-        bgfx::setUniform(u_viewPos, viewPos);
 
         processInput();
 
