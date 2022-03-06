@@ -18,6 +18,7 @@ function(add_bgfx_shader NAME)
             message(FATAL_ERROR "Shaders filename must have fs, vs or cs prefix. Got ${FILENAME}")
         endif()
 
+        set(INCLUDE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 		set(OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}.bin")
 		set(DEPENDS_PATH "${CMAKE_CURRENT_BINARY_DIR}/${FILENAME}.bin.d")
 
@@ -25,7 +26,7 @@ function(add_bgfx_shader NAME)
             OUTPUT "${OUTPUT_PATH}"
 			BYPRODUCTS "${DEPENDS_PATH}"
 		    COMMAND shaderc
-            ARGS -f "${FILE}" -o "${OUTPUT_PATH}" --type "${TYPE}" --depends --platform linux
+            ARGS -f "${FILE}" -o "${OUTPUT_PATH}" --type "${TYPE}" -i "${INCLUDE_PATH}" --depends --platform linux
             COMMENT "Building shader ${FILE}"
             DEPENDS "${FILE}"
             VERBATIM
