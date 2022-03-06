@@ -217,6 +217,9 @@ int main() {
         float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
         bgfx::setUniform(u_lightPos, lightPos);
 
+        float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
+        bgfx::setUniform(u_viewPos, viewPos);
+
         processInput();
 
         bgfx::touch(0);
