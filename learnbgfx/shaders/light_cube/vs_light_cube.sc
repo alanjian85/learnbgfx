@@ -1,6 +1,6 @@
-$input a_position, a_color0, a_texcoord0
+$input a_position
 
-#include <bgfx_shader.sh>
+#include "common.sh"
 
 void main() {
     gl_Position = u_modelViewProj * vec4(a_position, 1.0);
