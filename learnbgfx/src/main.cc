@@ -167,11 +167,9 @@ int main() {
 
     float objectColor[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
     float lightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
-    float lightPos[4] = { 1.2f, 1.0f, 2.0f };
 
     bgfx::setUniform(u_objectColor, objectColor);
     bgfx::setUniform(u_lightColor, lightColor);
-    bgfx::setUniform(u_lightPos, lightPos);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4dff);
@@ -215,6 +213,9 @@ int main() {
         );
 
         bgfx::setViewTransform(0, view, proj);
+
+        float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 0.0f };
+        bgfx::setUniform(u_lightPos, lightPos);
 
         float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 0.0f };
         bgfx::setUniform(u_viewPos, viewPos);
