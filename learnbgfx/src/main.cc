@@ -150,17 +150,11 @@ int main() {
         -0.5f,  0.5f, -0.5f,
     };
 
-    bgfx::VertexLayout cubeLayout;
-    cubeLayout.begin()
+    bgfx::VertexLayout layout;
+    layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
     .end();
-    bgfx::VertexBufferHandle cubeVbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), cubeLayout);
-
-    bgfx::VertexLayout lightCubeLayout;
-    lightCubeLayout.begin()
-        .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-    .end();
-    bgfx::VertexBufferHandle lightCubeVbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), lightCubeLayout);
+    bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
     bgfx::ProgramHandle lightingShader = loadProgram("vs_colors.bin", "fs_colors.bin");
     bgfx::ProgramHandle lightCubeShader = loadProgram("vs_light_cube.bin", "fs_light_cube.bin");
@@ -176,7 +170,7 @@ int main() {
     bx::Vec3 lightPos(1.2f, 1.0f, 2.0f);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
-    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4d);
+    bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4dff);
 
     while (!quit) {
         SDL_Event event;
@@ -225,7 +219,7 @@ int main() {
         float transform[16];
         bx::mtxIdentity(transform);
         bgfx::setTransform(transform);
-        bgfx::setVertexBuffer(0, cubeVbh);
+        bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
         bgfx::submit(0, lightingShader);
 
@@ -234,7 +228,7 @@ int main() {
             0.0f, 0.0f, 0.0f,
             lightPos.x, lightPos.y, lightPos.z);
         bgfx::setTransform(transform);
-        bgfx::setVertexBuffer(0, lightCubeVbh);
+        bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
         bgfx::submit(0, lightCubeShader);
 
