@@ -168,6 +168,7 @@ int main() {
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
     bgfx::UniformHandle u_light_position = bgfx::createUniform("u_light_position", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_color = bgfx::createUniform("u_light_color", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_light_ambient", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_light_diffuse", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_light_specular", bgfx::UniformType::Vec4);
@@ -178,7 +179,6 @@ int main() {
     bgfx::setUniform(u_light_ambient, light_ambient);
     bgfx::setUniform(u_light_diffuse, light_diffuse);
     bgfx::setUniform(u_light_specular, light_specular);
-
     
     float material_specular[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
@@ -228,16 +228,14 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
-        bx::Vec3 lightColor(
-            std::sin(currentFrame * 2.0f),
-            std::sin(currentFrame * 0.7f),
-            std::sin(currentFrame * 1.3f)
-        );
+        
 
-        float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
-        float material_ambient[4] = { lightColor.x * 0.5f, lightColor.y * 0.5f, lightColor.z * 0.5f, 1.0f };
-        float material_diffuse[4] = { lightColor.x * 0.2f, lightColor.y * 0.2f, lightColor.z * 0.2f, 1.0f };
-        bgfx::setUniform(u_light_position, lightPos);
+        float light_pos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
+        float light_color[4] = { std::sin(currentFrame * 2.0f), std::sin(currentFrame * 0.7f), std::sin(currentFrame * 1.3f) };
+        float material_ambient[4] = { light_color[0] * 0.5f, light_color[1] * 0.5f, light_color[2] * 0.5f, 1.0f };
+        float material_diffuse[4] = { light_color[0] * 0.2f, light_color[1] * 0.2f, light_color[2] * 0.2f, 1.0f };
+        bgfx::setUniform(u_light_position, light_pos);
+        bgfx::setUniform(u_light_color, light_color);
         bgfx::setUniform(u_material_ambient, material_ambient);
         bgfx::setUniform(u_material_diffuse, material_diffuse);
 
@@ -258,7 +256,7 @@ int main() {
         bx::mtxSRT(transform,
             0.2f, 0.2f, 0.2f,
             0.0f, 0.0f, 0.0f,
-            lightPos[0], lightPos[1], lightPos[2]);
+            light_pos[0], light_pos[1], light_pos[2]);
         bgfx::setTransform(transform);
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);

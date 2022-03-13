@@ -1,5 +1,7 @@
 #include "common.sh"
 
+uniform vec4 u_light_color;
+
 void main() {
-    gl_FragColor = vec4(1.0);
+    gl_FragColor = u_light_color;
 }
