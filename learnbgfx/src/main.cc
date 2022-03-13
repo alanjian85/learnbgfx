@@ -179,12 +179,9 @@ int main() {
     bgfx::setUniform(u_light_diffuse, light_diffuse);
     bgfx::setUniform(u_light_specular, light_specular);
 
-    float material_ambient[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
-    float material_diffuse[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
+    
     float material_specular[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
-    bgfx::setUniform(u_material_ambient, material_ambient);
-    bgfx::setUniform(u_material_diffuse, material_diffuse);
     bgfx::setUniform(u_material_specular, material_specular);
     bgfx::setUniform(u_material_shininess, material_shininess);
 
@@ -231,8 +228,18 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
+        bx::Vec3 lightColor(
+            std::sin(currentFrame * 2.0f),
+            std::sin(currentFrame * 0.7f),
+            std::sin(currentFrame * 1.3f)
+        );
+
         float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
+        float material_ambient[4] = { lightColor.x * 0.5f, lightColor.y * 0.5f, lightColor.z * 0.5f, 1.0f };
+        float material_diffuse[4] = { lightColor.x * 0.2f, lightColor.y * 0.2f, lightColor.z * 0.2f, 1.0f };
         bgfx::setUniform(u_light_position, lightPos);
+        bgfx::setUniform(u_material_ambient, material_ambient);
+        bgfx::setUniform(u_material_diffuse, material_diffuse);
 
         float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
         bgfx::setUniform(u_viewPos, viewPos);
