@@ -160,16 +160,26 @@ int main() {
     bgfx::ProgramHandle lightingShader = loadProgram("vs_colors.bin", "fs_colors.bin");
     bgfx::ProgramHandle lightCubeShader = loadProgram("vs_light_cube.bin", "fs_light_cube.bin");
 
-    bgfx::UniformHandle u_objectColor = bgfx::createUniform("u_objectColor", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_lightColor = bgfx::createUniform("u_lightColor", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_lightPos = bgfx::createUniform("u_lightPos", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_viewPos = bgfx::createUniform("u_viewPos", bgfx::UniformType::Vec4);
 
-    float objectColor[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
-    float lightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
+    bgfx::UniformHandle u_material_ambient = bgfx::createUniform("u_material_ambient", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_material_diffuse = bgfx::createUniform("u_material_diffuse", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_material_specular = bgfx::createUniform("u_material_specular", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
-    bgfx::setUniform(u_objectColor, objectColor);
+    float lightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
     bgfx::setUniform(u_lightColor, lightColor);
+
+    float material_ambient[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
+    float material_diffuse[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
+    float material_specular[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
+    bgfx::setUniform(u_material_ambient, material_ambient);
+    bgfx::setUniform(u_material_diffuse, material_diffuse);
+    bgfx::setUniform(u_material_specular, material_specular);
+    bgfx::setUniform(u_material_shininess, material_shininess);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x334d4dff);
