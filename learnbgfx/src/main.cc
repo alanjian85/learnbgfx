@@ -160,8 +160,6 @@ int main() {
     bgfx::ProgramHandle lightingShader = loadProgram("vs_colors.bin", "fs_colors.bin");
     bgfx::ProgramHandle lightCubeShader = loadProgram("vs_light_cube.bin", "fs_light_cube.bin");
 
-    bgfx::UniformHandle u_lightColor = bgfx::createUniform("u_lightColor", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_lightPos = bgfx::createUniform("u_lightPos", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_viewPos = bgfx::createUniform("u_viewPos", bgfx::UniformType::Vec4);
 
     bgfx::UniformHandle u_material_ambient = bgfx::createUniform("u_material_ambient", bgfx::UniformType::Vec4);
@@ -169,8 +167,17 @@ int main() {
     bgfx::UniformHandle u_material_specular = bgfx::createUniform("u_material_specular", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
-    float lightColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
-    bgfx::setUniform(u_lightColor, lightColor);
+    bgfx::UniformHandle u_light_position = bgfx::createUniform("u_light_position", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_light_ambient", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_light_diffuse", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_light_specular", bgfx::UniformType::Vec4);
+
+    float light_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    float light_diffuse[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    float light_specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    bgfx::setUniform(u_light_ambient, light_ambient);
+    bgfx::setUniform(u_light_diffuse, light_diffuse);
+    bgfx::setUniform(u_light_specular, light_specular);
 
     float material_ambient[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
     float material_diffuse[4] = { 1.0f, 0.5f, 0.31f, 1.0f };
@@ -225,7 +232,7 @@ int main() {
         bgfx::setViewTransform(0, view, proj);
 
         float lightPos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
-        bgfx::setUniform(u_lightPos, lightPos);
+        bgfx::setUniform(u_light_position, lightPos);
 
         float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
         bgfx::setUniform(u_viewPos, viewPos);
