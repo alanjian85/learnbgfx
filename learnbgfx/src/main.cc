@@ -186,16 +186,19 @@ int main() {
     bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_lightAmbient", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_lightDiffuse", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_lightSpecular", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_light_constants = bgfx::createUniform("u_lightConstants", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_attenuation = bgfx::createUniform("u_lightAttenuation", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_cones = bgfx::createUniform("u_lightCones", bgfx::UniformType::Vec4);
 
     float light_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
     float light_diffuse[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
     float light_specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float light_constants[4] = { 1.0f, 0.09f, 0.032f, bx::cos(bx::toRad(12.5f)) };
+    float light_attenuation[4] = { 1.0f, 0.09f, 0.032f, 0.0f };
+    float light_cones[4] = { bx::cos(bx::toRad(12.5f)), bx::cos(bx::toRad(17.5)), 0.0f, 0.0f };
     bgfx::setUniform(u_light_ambient, light_ambient);
     bgfx::setUniform(u_light_diffuse, light_diffuse);
     bgfx::setUniform(u_light_specular, light_specular);
-    bgfx::setUniform(u_light_constants, light_constants);
+    bgfx::setUniform(u_light_attenuation, light_attenuation);
+    bgfx::setUniform(u_light_cones, light_cones);
     
     bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
     bgfx::TextureHandle specular_map = LoadTexture("container2_specular.dds");
