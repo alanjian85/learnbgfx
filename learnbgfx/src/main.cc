@@ -184,7 +184,7 @@ int main() {
     bgfx::setUniform(u_light_specular, light_specular);
     
     bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
-    bgfx::TextureHandle specular_map = LoadTexture("container2_specular.dds");
+    bgfx::TextureHandle specular_map = LoadTexture("lighting_maps_specular_color.dds");
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
     bgfx::setTexture(0, s_material_diffuse, diffuse_map);
     bgfx::setTexture(1, s_material_specular, specular_map);
