@@ -182,18 +182,16 @@ int main() {
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_materialShininess", bgfx::UniformType::Vec4);
 
     bgfx::UniformHandle u_light_position = bgfx::createUniform("u_lightPosition", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_light_color = bgfx::createUniform("u_lightColor", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_direction = bgfx::createUniform("u_lightDirection", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_lightAmbient", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_lightDiffuse", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_lightSpecular", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_constants = bgfx::createUniform("u_lightConstants", bgfx::UniformType::Vec4);
 
-    float light_color[4] = { 1.0f, 1.0f, 1.0f };
     float light_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
     float light_diffuse[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
     float light_specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float light_constants[4] = { 1.0f, 0.09f, 0.032f, 1.0f };
-    bgfx::setUniform(u_light_color, light_color);
+    float light_constants[4] = { 1.0f, 0.09f, 0.032f, bx::cos(bx::toRad(12.5f)) };
     bgfx::setUniform(u_light_ambient, light_ambient);
     bgfx::setUniform(u_light_diffuse, light_diffuse);
     bgfx::setUniform(u_light_specular, light_specular);
@@ -249,8 +247,10 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
-        float light_position[4] = { 1.2f, 1.0f, -2.0f, 1.0f };
+        float light_position[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
+        float light_direction[4] = { camera.direction().x, camera.direction().y, camera.direction().z, 1.0f };
         bgfx::setUniform(u_light_position, light_position);
+        bgfx::setUniform(u_light_direction, light_direction);
 
         float view_pos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
         bgfx::setUniform(u_view_pos, view_pos);
@@ -272,13 +272,6 @@ int main() {
             bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
             bgfx::submit(0, lighting_shader);
         }
-
-        float transform[16];
-        bx::mtxTranslate(transform, light_position[0], light_position[1], light_position[2]);
-        bgfx::setTransform(transform);
-        bgfx::setVertexBuffer(0, vbh);
-        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-        bgfx::submit(0, light_cube_shader);
 
         bgfx::frame();
     }
