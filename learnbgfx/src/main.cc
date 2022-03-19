@@ -151,6 +151,19 @@ int main() {
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
+    bx::Vec3 cube_positions[] = {
+        bx::Vec3( 0.0f,  0.0f,  0.0f),
+        bx::Vec3( 2.0f,  5.0f, -15.0f),
+        bx::Vec3(-1.5f, -2.2f, -2.5f),
+        bx::Vec3(-3.8f, -2.0f, -12.3f),
+        bx::Vec3( 2.4f, -0.4f, -3.5f),
+        bx::Vec3(-1.7f,  3.0f, -7.5f),
+        bx::Vec3( 1.3f, -2.0f, -2.5f),
+        bx::Vec3( 1.5f,  2.0f, -2.5f),
+        bx::Vec3( 1.5f,  0.2f, -1.5f),
+        bx::Vec3(-1.3f,  1.0f, -1.5f)
+    };
+
     bgfx::VertexLayout layout;
     layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
@@ -166,10 +179,9 @@ int main() {
 
     bgfx::UniformHandle s_material_diffuse = bgfx::createUniform("s_material_diffuse", bgfx::UniformType::Sampler);
     bgfx::UniformHandle s_material_specular = bgfx::createUniform("s_material_specular", bgfx::UniformType::Sampler);
-    bgfx::UniformHandle s_material_emission = bgfx::createUniform("s_material_emission", bgfx::UniformType::Sampler);
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
-    bgfx::UniformHandle u_light_position = bgfx::createUniform("u_light_position", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_direction = bgfx::createUniform("u_light_direction", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_color = bgfx::createUniform("u_light_color", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_light_ambient", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_light_diffuse", bgfx::UniformType::Vec4);
@@ -186,11 +198,9 @@ int main() {
     
     bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
     bgfx::TextureHandle specular_map = LoadTexture("container2_specular.dds");
-    bgfx::TextureHandle emission_map = LoadTexture("matrix.dds");
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
     bgfx::setTexture(0, s_material_diffuse, diffuse_map);
     bgfx::setTexture(1, s_material_specular, specular_map);
-    bgfx::setTexture(2, s_material_emission, emission_map);
     bgfx::setUniform(u_material_shininess, material_shininess);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
@@ -236,8 +246,8 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
-        float light_pos[4] = { 1.2f, 1.0f, 2.0f, 1.0f };
-        bgfx::setUniform(u_light_position, light_pos);
+        float light_direction[4] = { -0.2f, -1.0f, -0.3f, 1.0f };
+        bgfx::setUniform(u_light_direction, light_direction);
 
         float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
         bgfx::setUniform(u_viewPos, viewPos);
@@ -246,21 +256,19 @@ int main() {
 
         bgfx::touch(0);
 
-        float transform[16];
-        bx::mtxIdentity(transform);
-        bgfx::setTransform(transform);
-        bgfx::setVertexBuffer(0, vbh);
-        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-        bgfx::submit(0, lighting_shader);
-
-        bx::mtxSRT(transform,
-            0.2f, 0.2f, 0.2f,
-            0.0f, 0.0f, 0.0f,
-            light_pos[0], light_pos[1], light_pos[2]);
-        bgfx::setTransform(transform);
-        bgfx::setVertexBuffer(0, vbh);
-        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-        bgfx::submit(0, light_cube_shader);
+        for(unsigned int i = 0; i < 10; i++) {
+            float transform[16];
+            float angle = 20.0f * i;
+            bx::mtxSRT(transform,
+                1.0f, 1.0f, 1.0f,
+                -bx::toRad(angle), 0.3f * -bx::toRad(angle), 0.5f * -bx::toRad(angle),
+                cube_positions[i].x, cube_positions[i].y, -cube_positions[i].z
+            );
+            bgfx::setTransform(transform);
+            bgfx::setVertexBuffer(0, vbh);
+            bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+            bgfx::submit(0, lighting_shader);
+        }
 
         bgfx::frame();
     }
