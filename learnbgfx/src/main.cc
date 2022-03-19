@@ -175,26 +175,29 @@ int main() {
     bgfx::ProgramHandle lighting_shader = LoadProgram("vs_colors.bin", "fs_colors.bin");
     bgfx::ProgramHandle light_cube_shader = LoadProgram("vs_light_cube.bin", "fs_light_cube.bin");
 
-    bgfx::UniformHandle u_viewPos = bgfx::createUniform("u_viewPos", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_view_pos = bgfx::createUniform("u_viewPos", bgfx::UniformType::Vec4);
 
-    bgfx::UniformHandle s_material_diffuse = bgfx::createUniform("s_material_diffuse", bgfx::UniformType::Sampler);
-    bgfx::UniformHandle s_material_specular = bgfx::createUniform("s_material_specular", bgfx::UniformType::Sampler);
-    bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle s_material_diffuse = bgfx::createUniform("s_materialDiffuse", bgfx::UniformType::Sampler);
+    bgfx::UniformHandle s_material_specular = bgfx::createUniform("s_materialSpecular", bgfx::UniformType::Sampler);
+    bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_materialShininess", bgfx::UniformType::Vec4);
 
-    bgfx::UniformHandle u_light_direction = bgfx::createUniform("u_light_direction", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_light_color = bgfx::createUniform("u_light_color", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_light_ambient", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_light_diffuse", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_light_specular", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_position = bgfx::createUniform("u_lightPosition", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_color = bgfx::createUniform("u_lightColor", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_ambient = bgfx::createUniform("u_lightAmbient", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_diffuse = bgfx::createUniform("u_lightDiffuse", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_lightSpecular", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle u_light_constants = bgfx::createUniform("u_lightConstants", bgfx::UniformType::Vec4);
 
     float light_color[4] = { 1.0f, 1.0f, 1.0f };
     float light_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
     float light_diffuse[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
     float light_specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light_constants[4] = { 1.0f, 0.09f, 0.032f, 1.0f };
     bgfx::setUniform(u_light_color, light_color);
     bgfx::setUniform(u_light_ambient, light_ambient);
     bgfx::setUniform(u_light_diffuse, light_diffuse);
     bgfx::setUniform(u_light_specular, light_specular);
+    bgfx::setUniform(u_light_constants, light_constants);
     
     bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
     bgfx::TextureHandle specular_map = LoadTexture("container2_specular.dds");
@@ -246,11 +249,11 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
-        float light_direction[4] = { -0.2f, -1.0f, -0.3f, 1.0f };
-        bgfx::setUniform(u_light_direction, light_direction);
+        float light_position[4] = { 1.2f, 1.0f, -2.0f, 1.0f };
+        bgfx::setUniform(u_light_position, light_position);
 
-        float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
-        bgfx::setUniform(u_viewPos, viewPos);
+        float view_pos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
+        bgfx::setUniform(u_view_pos, view_pos);
 
         ProcessInput();
 
@@ -269,6 +272,13 @@ int main() {
             bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
             bgfx::submit(0, lighting_shader);
         }
+
+        float transform[16];
+        bx::mtxTranslate(transform, light_position[0], light_position[1], light_position[2]);
+        bgfx::setTransform(transform);
+        bgfx::setVertexBuffer(0, vbh);
+        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+        bgfx::submit(0, light_cube_shader);
 
         bgfx::frame();
     }
