@@ -165,7 +165,7 @@ int main() {
     bgfx::UniformHandle u_viewPos = bgfx::createUniform("u_viewPos", bgfx::UniformType::Vec4);
 
     bgfx::UniformHandle s_material_diffuse = bgfx::createUniform("s_material_diffuse", bgfx::UniformType::Sampler);
-    bgfx::UniformHandle u_material_specular = bgfx::createUniform("u_material_specular", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle s_material_specular = bgfx::createUniform("s_material_specular", bgfx::UniformType::Sampler);
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
     bgfx::UniformHandle u_light_position = bgfx::createUniform("u_light_position", bgfx::UniformType::Vec4);
@@ -175,8 +175,8 @@ int main() {
     bgfx::UniformHandle u_light_specular = bgfx::createUniform("u_light_specular", bgfx::UniformType::Vec4);
 
     float light_color[4] = { 1.0f, 1.0f, 1.0f };
-    float light_ambient[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    float light_diffuse[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float light_ambient[4] = { 0.2f, 0.2f, 0.2f, 1.0f };
+    float light_diffuse[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
     float light_specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
     bgfx::setUniform(u_light_color, light_color);
     bgfx::setUniform(u_light_ambient, light_ambient);
@@ -184,10 +184,10 @@ int main() {
     bgfx::setUniform(u_light_specular, light_specular);
     
     bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
-    float material_specular[4] = { 0.50196078f, 0.50196078f, 0.50196078f, 1.0f };
+    bgfx::TextureHandle specular_map = LoadTexture("container2_specular.dds");
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
     bgfx::setTexture(0, s_material_diffuse, diffuse_map);
-    bgfx::setUniform(u_material_specular, material_specular);
+    bgfx::setTexture(1, s_material_specular, specular_map);
     bgfx::setUniform(u_material_shininess, material_shininess);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);
@@ -233,7 +233,7 @@ int main() {
 
         bgfx::setViewTransform(0, view, proj);
 
-        float light_pos[4] = { 1.0f + std::sin(currentFrame) * 2.0f, std::cos(currentFrame / 2.0f) * 1.0f, 2.0f, 1.0f };
+        float light_pos[4] = { 1.2f, 1.0f, 2.0f, 1.0f };
         bgfx::setUniform(u_light_position, light_pos);
 
         float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
