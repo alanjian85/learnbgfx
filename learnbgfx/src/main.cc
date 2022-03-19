@@ -166,6 +166,7 @@ int main() {
 
     bgfx::UniformHandle s_material_diffuse = bgfx::createUniform("s_material_diffuse", bgfx::UniformType::Sampler);
     bgfx::UniformHandle s_material_specular = bgfx::createUniform("s_material_specular", bgfx::UniformType::Sampler);
+    bgfx::UniformHandle s_material_emission = bgfx::createUniform("s_material_emission", bgfx::UniformType::Sampler);
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
     bgfx::UniformHandle u_light_position = bgfx::createUniform("u_light_position", bgfx::UniformType::Vec4);
@@ -184,10 +185,12 @@ int main() {
     bgfx::setUniform(u_light_specular, light_specular);
     
     bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
-    bgfx::TextureHandle specular_map = LoadTexture("lighting_maps_specular_color.dds");
+    bgfx::TextureHandle specular_map = LoadTexture("container2_specular.dds");
+    bgfx::TextureHandle emission_map = LoadTexture("matrix.dds");
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
     bgfx::setTexture(0, s_material_diffuse, diffuse_map);
     bgfx::setTexture(1, s_material_specular, specular_map);
+    bgfx::setTexture(2, s_material_emission, emission_map);
     bgfx::setUniform(u_material_shininess, material_shininess);
 
     bgfx::setViewRect(0, 0, 0, 800, 600);

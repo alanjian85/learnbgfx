@@ -12,11 +12,12 @@ set(LEARNBGFX_SHADERS
 add_bgfx_shader(learnbgfx ${LEARNBGFX_SHADERS})
 
 set(LEARNBGFX_TEXTURES
+    textures/awesomeface.png    
     textures/container.jpg
     textures/container2.png
     textures/container2_specular.png
     textures/lighting_maps_specular_color.png
-    textures/awesomeface.png)
+    textures/matrix.jpg)
 add_bgfx_texture(learnbgfx ${LEARNBGFX_TEXTURES})
 
 find_package(SDL2 REQUIRED)
