@@ -8,7 +8,7 @@
 #include <bgfx/bgfx.h>
 
 namespace learnbgfx {
-    inline bgfx::ShaderHandle loadShader(const char* filename) {
+    inline bgfx::ShaderHandle LoadShader(const char* filename) {
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
         std::size_t size = file.tellg();
         file.seekg(0, std::ios::beg);
@@ -19,9 +19,9 @@ namespace learnbgfx {
         return bgfx::createShader(memory);
     }
 
-    inline bgfx::ProgramHandle loadProgram(const char* vs, const char* fs) {
-        bgfx::ShaderHandle vsh = loadShader(vs);
-        bgfx::ShaderHandle fsh = loadShader(fs);
+    inline bgfx::ProgramHandle LoadProgram(const char* vs, const char* fs) {
+        bgfx::ShaderHandle vsh = LoadShader(vs);
+        bgfx::ShaderHandle fsh = LoadShader(fs);
         return bgfx::createProgram(vsh, fsh, true);
     }
 }

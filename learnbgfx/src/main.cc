@@ -23,20 +23,20 @@ namespace {
     Camera camera;
 }
 
-void windowResizeCallback(SDL_Window* window, int width, int height) {
+void WindowResizeCallback(SDL_Window* window, int width, int height) {
     bgfx::reset(width, height);
     bgfx::setViewRect(0, 0, 0, width, height);
 }
 
-void mouseMoveCallback(SDL_Window* window, Sint32 xrel, Sint32 yrel) {
+void MouseMoveCallback(SDL_Window* window, Sint32 xrel, Sint32 yrel) {
     camera.processMouseMovement(xrel, -yrel);
 }
 
-void mouseScrollCallback(SDL_Window* window, Sint32 x, Sint32 y) {
+void MouseScrollCallback(SDL_Window* window, Sint32 x, Sint32 y) {
     camera.processMouseScroll(y);
 }
 
-void processInput() {
+void ProcessInput() {
     const Uint8* state = SDL_GetKeyboardState(nullptr);
     if (state[SDL_SCANCODE_ESCAPE]) {
         quit = true;
@@ -107,63 +107,64 @@ int main() {
     SDL_SetRelativeMouseMode(SDL_TRUE);
 
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 
-
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        // positions          // normals           // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+    
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+    
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+    
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+    
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+    
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
 
     bgfx::VertexLayout layout;
     layout.begin()
         .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
         .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
+        .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
     .end();
     bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(bgfx::makeRef(vertices, sizeof(vertices)), layout);
 
-    bgfx::ProgramHandle lightingShader = loadProgram("vs_colors.bin", "fs_colors.bin");
-    bgfx::ProgramHandle lightCubeShader = loadProgram("vs_light_cube.bin", "fs_light_cube.bin");
+    bgfx::ProgramHandle lighting_shader = LoadProgram("vs_colors.bin", "fs_colors.bin");
+    bgfx::ProgramHandle light_cube_shader = LoadProgram("vs_light_cube.bin", "fs_light_cube.bin");
 
     bgfx::UniformHandle u_viewPos = bgfx::createUniform("u_viewPos", bgfx::UniformType::Vec4);
 
-    bgfx::UniformHandle u_material_ambient = bgfx::createUniform("u_material_ambient", bgfx::UniformType::Vec4);
-    bgfx::UniformHandle u_material_diffuse = bgfx::createUniform("u_material_diffuse", bgfx::UniformType::Vec4);
+    bgfx::UniformHandle s_material_diffuse = bgfx::createUniform("s_material_diffuse", bgfx::UniformType::Sampler);
     bgfx::UniformHandle u_material_specular = bgfx::createUniform("u_material_specular", bgfx::UniformType::Vec4);
     bgfx::UniformHandle u_material_shininess = bgfx::createUniform("u_material_shininess", bgfx::UniformType::Vec4);
 
@@ -182,12 +183,10 @@ int main() {
     bgfx::setUniform(u_light_diffuse, light_diffuse);
     bgfx::setUniform(u_light_specular, light_specular);
     
-    float material_ambient[4] = { 0.0f, 0.1f, 0.06f, 1.0f };
-    float material_diffuse[4] = { 0.0f, 0.50980392f, 0.50980392f };
+    bgfx::TextureHandle diffuse_map = LoadTexture("container2.dds");
     float material_specular[4] = { 0.50196078f, 0.50196078f, 0.50196078f, 1.0f };
     float material_shininess[4] = { 32.0f, 0.0f, 0.0f, 1.0f };
-    bgfx::setUniform(u_material_ambient, material_ambient);
-    bgfx::setUniform(u_material_diffuse, material_diffuse);
+    bgfx::setTexture(0, s_material_diffuse, diffuse_map);
     bgfx::setUniform(u_material_specular, material_specular);
     bgfx::setUniform(u_material_shininess, material_shininess);
 
@@ -204,15 +203,15 @@ int main() {
                 case SDL_WINDOWEVENT:
                     switch (event.window.event) {
                         case SDL_WINDOWEVENT_RESIZED:
-                            windowResizeCallback(window, event.window.data1, event.window.data2);
+                            WindowResizeCallback(window, event.window.data1, event.window.data2);
                             break;
                     }
                     break;
                 case SDL_MOUSEMOTION:
-                    mouseMoveCallback(window, event.motion.xrel, event.motion.yrel);
+                    MouseMoveCallback(window, event.motion.xrel, event.motion.yrel);
                     break;
                 case SDL_MOUSEWHEEL:
-                    mouseScrollCallback(window, event.wheel.x, event.wheel.y);
+                    MouseScrollCallback(window, event.wheel.x, event.wheel.y);
                     break;
             }
         }
@@ -240,7 +239,7 @@ int main() {
         float viewPos[4] = { camera.position.x, camera.position.y, camera.position.z, 1.0f };
         bgfx::setUniform(u_viewPos, viewPos);
 
-        processInput();
+        ProcessInput();
 
         bgfx::touch(0);
 
@@ -249,7 +248,7 @@ int main() {
         bgfx::setTransform(transform);
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-        bgfx::submit(0, lightingShader);
+        bgfx::submit(0, lighting_shader);
 
         bx::mtxSRT(transform,
             0.2f, 0.2f, 0.2f,
@@ -258,7 +257,7 @@ int main() {
         bgfx::setTransform(transform);
         bgfx::setVertexBuffer(0, vbh);
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
-        bgfx::submit(0, lightCubeShader);
+        bgfx::submit(0, light_cube_shader);
 
         bgfx::frame();
     }

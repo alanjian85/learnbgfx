@@ -11,7 +11,7 @@
 #include <bx/allocator.h>
 
 namespace learnbgfx {
-    bgfx::TextureHandle loadTexture(const char* filename, std::uint64_t flags = 0) {
+    bgfx::TextureHandle LoadTexture(const char* filename, std::uint64_t flags = 0) {
         std::ifstream file(filename, std::ios::ate | std::ios::binary);
         std::size_t size = file.tellg();
         file.seekg(0, std::ios::beg);

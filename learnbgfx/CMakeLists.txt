@@ -13,6 +13,7 @@ add_bgfx_shader(learnbgfx ${LEARNBGFX_SHADERS})
 
 set(LEARNBGFX_TEXTURES
     textures/container.jpg
+    textures/container2.png
     textures/awesomeface.png)
 add_bgfx_texture(learnbgfx ${LEARNBGFX_TEXTURES})
 
